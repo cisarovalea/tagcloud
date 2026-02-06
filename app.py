@@ -32,7 +32,8 @@ slovak_stopwords = [
     "a", "aby", "aj", "ale", "ani", "ako", "ani", "sa", "som", "si", "sú", "je",
     "že", "zo", "za", "na", "v", "do", "po", "pre", "od", "k", "so", "bez", "o",
     "alebo", "tak", "ten", "tá", "to", "s", "sa", "sú", "sa", "už", "do", "pri",
-    "sa", "ako", "pretože", "keď", "ktorý", "ktorá", "ktoré", "ale", "teda"
+    "sa", "ako", "pretože", "keď", "ktorý", "ktorá", "ktoré", "ale", "teda", "táto",
+    "podľa", "napriek", "byť", "zároveň", "vrátane", "mnohý", "určený", "toto"
 ]
 
 def lemmatize_words_udpipe(text):
@@ -74,7 +75,7 @@ if uploaded_file:
     
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
-        "bakalársky,cieľ,práca,analýza"
+        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický"
     )
 
     custom_stopwords = [w.strip().lower() for w in stopwords_input.split(",") if w.strip() != ""]
