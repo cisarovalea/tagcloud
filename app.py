@@ -22,11 +22,18 @@ st.write("Aplikácia funguje")
 
 st.subheader("Nahraj abstrakty")
 
-MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"  # cesta v repozitári
+MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe" 
 model = ufal.udpipe.Model.load(MODEL_PATH)
 if not model:
     st.error("Nepodarilo sa načítať UDPipe model!")
     st.stop()
+
+slovak_stopwords = [
+    "a", "aby", "aj", "ale", "ani", "ako", "ani", "sa", "som", "si", "sú", "je",
+    "že", "zo", "za", "na", "v", "do", "po", "pre", "od", "k", "so", "bez", "o",
+    "alebo", "tak", "ten", "tá", "to", "s", "sa", "sú", "sa", "už", "do", "pri",
+    "sa", "ako", "pretože", "keď", "ktorý", "ktorá", "ktoré", "ale", "teda"
+]
 
 def lemmatize_words_udpipe(text):
     """
@@ -71,6 +78,7 @@ if uploaded_file:
     )
 
     stopwords = [w.strip().lower() for w in stopwords_input.split(",")]
+    all_stopwords = set(slovak_stopwords + custom_stopwords)
 
     filtered_lemmas = [w for w in lemmas if w not in stopwords and len(w) > 2]
     st.write("Slová po filtrovaní:")
