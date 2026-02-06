@@ -63,7 +63,7 @@ if uploaded_file:
     st.write("Lematizujem text... (môže chvíľu trvať pri veľkých datasetoch)")
     lemmas = lemmatize_words_udpipe(text)
     st.write("Prvých lematizovaných slov:", len(lemmas))
-    st.write("Prvých 20 slov na kontrolu:", lemmas[:20])
+    st.write("Prvých 50 slov na kontrolu:", lemmas[:50])
     
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
@@ -74,12 +74,12 @@ if uploaded_file:
 
     filtered_lemmas = [w for w in lemmas if w not in stopwords and len(w) > 2]
     st.write("Slová po filtrovaní:")
-    st.write(filtered_lemmas[:20])
+    st.write(filtered_lemmas[:50])
 
     words_counter = Counter(filtered_lemmas)
     
-    most_common = words_counter.most_common(20)
-    st.write("20 najčastejších slov:", most_common)
+    most_common = words_counter.most_common(50)
+    st.write("50 najčastejších slov:", most_common)
     
     from wordcloud import WordCloud
     import matplotlib.pyplot as plt
