@@ -58,6 +58,10 @@ if uploaded_file:
     st.write("Slová po filtrovaní:")
     st.write(filtered_words[:20])
 
+    st.write("Lematizujem slová... (môže chvíľu trvať pri veľkých datasetoch)")
+    filtered_words_lemmas = [lemmatize_word(w) for w in filtered_words]
+    st.write("Prvých 20 lematizovaných slov:", filtered_words_lemmas[:20])
+
     words_counter = Counter(filtered_words)
     
     from wordcloud import WordCloud
