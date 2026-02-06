@@ -62,7 +62,7 @@ if uploaded_file:
     
     st.write("Lematizujem text... (môže chvíľu trvať pri veľkých datasetoch)")
     lemmas = lemmatize_words_udpipe(text)
-    st.write("Prvých lematizovaných slov:", len(filtered_lemmas))
+    st.write("Prvých lematizovaných slov:", len(lemmas))
     st.write("Prvých 20 slov na kontrolu:", lemmas[:20])
     
     stopwords_input = st.text_area(
