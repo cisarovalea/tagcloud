@@ -42,7 +42,7 @@ def lemmatize_words_udpipe(text):
             continue
         parts = line.split("\t")
         if len(parts) >= 4:
-            lemma = parts[2]  # lemma je tretí stĺpec v CONLLU formáte
+            lemma = parts[2]
             lemmas.append(lemma.lower())
     return lemmas
     
@@ -62,9 +62,8 @@ if uploaded_file:
     
     st.write("Lematizujem text... (môže chvíľu trvať pri veľkých datasetoch)")
     lemmas = lemmatize_words_udpipe(text)
-    st.write("Prvých 20 lematizovaných slov:", lemmas[:20])
-    st.write("Počet slov:", len(words))
-    st.write(words[:20])
+    st.write("Prvých lematizovaných slov:", len(filtered_lemmas))
+    st.write("Prvých 20 slov na kontrolu:", lemmas[:20])
     
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
@@ -78,6 +77,9 @@ if uploaded_file:
     st.write(filtered_lemmas[:20])
 
     words_counter = Counter(filtered_lemmas)
+    
+    most_common = words_counter.most_common(20)
+    st.write("20 najčastejších slov:", most_common)
     
     from wordcloud import WordCloud
     import matplotlib.pyplot as plt
