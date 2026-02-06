@@ -36,7 +36,7 @@ if uploaded_file:
     st.write("Slová po filtrovaní:")
     st.write(filtered_words[:20])
     morph = pymorphy2.MorphAnalyzer(lang='sk')
-lemmas = [morph.parse(w)[0].normal_form for w in filtered_words]
+    lemmas = [morph.parse(w)[0].normal_form for w in filtered_words]
 
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
