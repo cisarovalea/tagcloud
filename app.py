@@ -32,6 +32,7 @@ def lemmatize_word(word):
 uploaded_file = st.file_uploader(
     "Vyber CSV súbor s abstraktmi záverečných prác",
     type="csv"
+)
 
 if uploaded_file:
     import pandas as pd
