@@ -1,7 +1,3 @@
-import spacy
-nlp = spacy.load("sk_core_news_sm")
-import streamlit as st
-
 st.title("NLP systém pre abstrakty")
 st.write("Aplikácia funguje 🎉")
 
@@ -13,26 +9,45 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file:
-    text = " ".join(df["abstrakt"].astype(str)) 
+    import pandas as pd
+    df = pd.read_csv(uploaded_file)
+    st.write("Načítané dáta:")
+    st.write(df.head())
     import re
+
+    text = " ".join(df["abstrakt"].astype(str))
     words = re.findall(r"\b\w+\b", text.lower())
-    
-    stopwords_input = st.text_area("Vlastné stop slová (oddelené čiarkou)",
-                               "bakalárska,cieľ,práca,analýza")
+
+    st.write("Počet slov:", len(words))
+    st.write(words[:20])
+    stopwords_input = st.text_area(
+        "Vlastné stop slová (oddelené čiarkou)",
+        "bakalárska,cieľ,práca,analýza"
+    )
+
     stopwords = [w.strip() for w in stopwords_input.split(",")]
-    filtered_words = [w for w in words if w not in stopwords and len(w) > 2]
+
+    filtered_words = [
+        w for w in words if w not in stopwords and len(w) > 2
+    ]
+
+    st.write("Slová po filtrovaní:")
+    st.write(filtered_words[:20])
     
-    doc = nlp(" ".join(filtered_words))
-    lemmas = [token.lemma_ for token in doc if not token.is_punct and not token.is_space]
+    from wordcloud import WordCloud
+    import matplotlib.pyplot as plt
     
-    from wordcloud import WordCloud 
-    import matplotlib.pyplot as plt 
+    wc_text = " ".join(filtered_words)
     
-    wc_text = " ".join(lemmas)
-    wc = WordCloud(width=800, height=400, background_color="white", colormap="viridis").generate(wc_text)
+    wc = WordCloud(
+    width=800,
+    height=400,
+    background_color="white",
+    colormap="viridis",  # môžeš zmeniť farby
+    stopwords=None  # stop slová už máme filtrované manuálne
+    ).generate(wc_text)
     
-    fig, ax = plt.subplots(figsize=(12,6))
+    fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
-    ax.axis("off")
-    st.pyplot(fig)
+
 
