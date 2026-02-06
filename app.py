@@ -36,7 +36,7 @@ if uploaded_file:
     st.write("Slová po filtrovaní:")
     st.write(filtered_words[:20])
     
-from wordcloud import WordCloud
+    from wordcloud import WordCloud
     import matplotlib.pyplot as plt
     
     wc_text = " ".join(filtered_words)
