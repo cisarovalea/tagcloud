@@ -3,3 +3,4 @@ pandas
 matplotlib
 wordcloud
 ufal.morphodita
+ufal.morphodita==2.1.0
