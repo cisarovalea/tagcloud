@@ -4,45 +4,37 @@ import re
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
-import ufal.morphodita
-
-import ufal.morphodita
-
-MODEL_PATH = "slovak-morfflex-pdt-170914.tagger"
-tagger = ufal.morphodita.Tagger.load(MODEL_PATH)
-if not tagger:
-    raise Exception("Nepodarilo sa načítať Morphodita model")
-
-forms = ufal.morphodita.Forms()
-lemmas = ufal.morphodita.Lemmas()
-
-slovo = "mačky"
-tagger.tag(slovo, forms, lemmas)
-print(lemmas[0].lemma)  # malo by vypísať "mačka"
+import ufal.udpipe
 
 st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
 st.write("Aplikácia funguje")
 
 st.subheader("Nahraj abstrakty")
 
-MODEL_PATH = "slovak-morfflex-pdt-170914.tagger"  # súbor je teraz v koreňovom repozitári
-tagger = ufal.morphodita.Tagger.load(MODEL_PATH)
-if not tagger:
-    st.error("Nepodarilo sa načítať Morphodita model!")
+MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"  # cesta v repozitári
+model = ufal.udpipe.Model.load(MODEL_PATH)
+if not model:
+    st.error("Nepodarilo sa načítať UDPipe model!")
     st.stop()
 
-def lemmatize_word(word):
+def lemmatize_words_udpipe(text):
     """
-    Funkcia na lematizáciu jedného slova pomocou Morphodita
+    Vstup: text ako string
+    Výstup: zoznam lematizovaných slov
     """
-    forms = ufal.morphodita.Forms()
-    lemmas = ufal.morphodita.Lemmas()
-    tagger.tag(word, forms, lemmas)
-    if lemmas.size() > 0:
-        return lemmas[0].lemma
-    else:
-        return word
-        
+    pipeline = ufal.udpipe.Pipeline(model, "tokenize", ufal.udpipe.Pipeline.DEFAULT, ufal.udpipe.Pipeline.DEFAULT, "conllu")
+    processed = pipeline.process(text)
+    
+    lemmas = []
+    for line in processed.split("\n"):
+        if line.startswith("#") or line.strip() == "":
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 4:
+            lemma = parts[2]  # lemma je tretí stĺpec v CONLLU formáte
+            lemmas.append(lemma.lower())
+    return lemmas
+    
 uploaded_file = st.file_uploader(
     "Vyber CSV súbor s abstraktmi záverečných prác",
     type="csv"
@@ -56,9 +48,13 @@ if uploaded_file:
 
     text = " ".join(df["abstrakt"].astype(str))
     words = re.findall(r"\b\w+\b", text.lower())
-
+    
+    st.write("Lematizujem text... (môže chvíľu trvať pri veľkých datasetoch)")
+    lemmas = lemmatize_words_udpipe(text)
+    st.write("Prvých 20 lematizovaných slov:", lemmas[:20])
     st.write("Počet slov:", len(words))
     st.write(words[:20])
+    
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
         "bakalárska,cieľ,práca,analýza"
@@ -66,15 +62,9 @@ if uploaded_file:
 
     stopwords = [w.strip().lower() for w in stopwords_input.split(",")]
 
-    filtered_words = [
-        w for w in words if w not in stopwords and len(w) > 2
-    ]
+    filtered_lemmas = [w for w in lemmas if w not in stopwords and len(w) > 2]
     st.write("Slová po filtrovaní:")
-    st.write(filtered_words[:20])
-
-    st.write("Lematizujem slová... (môže chvíľu trvať pri veľkých datasetoch)")
-    filtered_words_lemmas = [lemmatize_word(w) for w in filtered_words]
-    st.write("Prvých 20 lematizovaných slov:", filtered_words_lemmas[:20])
+    st.write(filtered_lemmas[:20])
 
     words_counter = Counter(filtered_words)
     
