@@ -77,7 +77,7 @@ if uploaded_file:
         "bakalársky,cieľ,práca,analýza"
     )
 
-    stopwords = [w.strip().lower() for w in stopwords_input.split(",")]
+    custom_stopwords = [w.strip().lower() for w in stopwords_input.split(",") if w.strip() != ""]
     all_stopwords = set(slovak_stopwords + custom_stopwords)
 
     filtered_lemmas = [w for w in lemmas if w not in stopwords and len(w) > 2]
