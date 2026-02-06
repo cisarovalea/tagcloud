@@ -4,16 +4,34 @@ import re
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
+import ufal.morphodita
 
 st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
 st.write("Aplikácia funguje")
 
 st.subheader("Nahraj abstrakty")
 
+MODEL_PATH = "slovak-morfflex-pdt-170914.tagger"  # súbor je teraz v koreňovom repozitári
+tagger = ufal.morphodita.Tagger.load(MODEL_PATH)
+if not tagger:
+    st.error("Nepodarilo sa načítať Morphodita model!")
+    st.stop()
+
+def lemmatize_word(word):
+    """
+    Funkcia na lematizáciu jedného slova pomocou Morphodita
+    """
+    forms = ufal.morphodita.Forms()
+    lemmas = ufal.morphodita.Lemmas()
+    tagger.tag(word, forms, lemmas)
+    if lemmas.size() > 0:
+        return lemmas[0].lemma
+    else:
+        return word
+        
 uploaded_file = st.file_uploader(
     "Vyber CSV súbor s abstraktmi záverečných prác",
     type="csv"
-)
 
 if uploaded_file:
     import pandas as pd
