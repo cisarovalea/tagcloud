@@ -76,7 +76,7 @@ if uploaded_file:
     
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
-        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický"
+        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený"
     )
 
     custom_stopwords = [w.strip().lower() for w in stopwords_input.split(",") if w.strip() != ""]
