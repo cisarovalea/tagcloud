@@ -1,12 +1,12 @@
 import streamlit as st
 
-st.title("NLP systém pre abstrakty")
-st.write("Aplikácia funguje 🎉")
+st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
+st.write("Aplikácia funguje")
 
 st.subheader("Nahraj abstrakty")
 
 uploaded_file = st.file_uploader(
-    "Vyber CSV súbor s abstraktmi",
+    "Vyber CSV súbor s abstraktmi záverečných prác",
     type="csv"
 )
 
