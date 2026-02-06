@@ -35,24 +35,21 @@ if uploaded_file:
 
     st.write("Slová po filtrovaní:")
     st.write(filtered_words[:20])
-
-
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-
-wc_text = " ".join(filtered_words)
-
-wc = WordCloud(
+    
+    from wordcloud import WordCloud
+    import matplotlib.pyplot as plt
+    wc_text = " ".join(filtered_words)
+    wc = WordCloud(
     width=800,
     height=400,
     background_color="white",
     colormap="viridis",  # môžeš zmeniť farby
     stopwords=None  # stop slová už máme filtrované manuálne
-).generate(wc_text)
-
-fig, ax = plt.subplots(figsize=(12, 6))
-ax.imshow(wc, interpolation='bilinear')
-ax.axis("off")
-
-st.subheader("Tagcloud abstraktov")
-st.pyplot(fig)
+    ).generate(wc_text)
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.imshow(wc, interpolation='bilinear')
+    ax.axis("off")
+    
+    st.subheader("Tagcloud abstraktov")
+    st.pyplot(fig)
