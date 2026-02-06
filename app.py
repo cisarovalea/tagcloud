@@ -1,4 +1,9 @@
 import streamlit as st
+import pandas as pd
+import re
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from collections import Counter
 
 st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
 st.write("Aplikácia funguje")
@@ -15,7 +20,6 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
     st.write("Načítané dáta:")
     st.write(df.head())
-    import re
 
     text = " ".join(df["abstrakt"].astype(str))
     words = re.findall(r"\b\w+\b", text.lower())
@@ -27,14 +31,15 @@ if uploaded_file:
         "bakalárska,cieľ,práca,analýza"
     )
 
-    stopwords = [w.strip() for w in stopwords_input.split(",")]
+    stopwords = [w.strip().lower() for w in stopwords_input.split(",")]
 
     filtered_words = [
         w for w in words if w not in stopwords and len(w) > 2
     ]
-
     st.write("Slová po filtrovaní:")
     st.write(filtered_words[:20])
+
+    words_counter = Counter(filtered_words)
     
     from wordcloud import WordCloud
     import matplotlib.pyplot as plt
@@ -45,9 +50,9 @@ if uploaded_file:
     width=800,
     height=400,
     background_color="white",
-    colormap="viridis",  # môžeš zmeniť farby
-    stopwords=None  # stop slová už máme filtrované manuálne
-    ).generate(wc_text)
+    colormap="viridis", 
+    stopwords=None 
+    ).generate_from_frequencies(words_counter)
     
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
