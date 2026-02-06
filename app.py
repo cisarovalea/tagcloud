@@ -6,20 +6,6 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import ufal.morphodita
 
-import ufal.morphodita
-
-MODEL_PATH = "slovak-morfflex-pdt-170914.tagger"
-tagger = ufal.morphodita.Tagger.load(MODEL_PATH)
-if not tagger:
-    raise Exception("Nepodarilo sa načítať Morphodita model")
-
-forms = ufal.morphodita.Forms()
-lemmas = ufal.morphodita.Lemmas()
-
-slovo = "mačky"
-tagger.tag(slovo, forms, lemmas)
-print(lemmas[0].lemma)  # malo by vypísať "mačka"
-
 st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
 st.write("Aplikácia funguje")
 
