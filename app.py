@@ -41,10 +41,8 @@ if uploaded_file:
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-# spojíme všetky filtrované slová do jedného textu
 wc_text = " ".join(filtered_words)
 
-# vytvoríme word cloud
 wc = WordCloud(
     width=800,
     height=400,
@@ -53,7 +51,6 @@ wc = WordCloud(
     stopwords=None  # stop slová už máme filtrované manuálne
 ).generate(wc_text)
 
-# vykreslenie cez matplotlib
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.imshow(wc, interpolation='bilinear')
 ax.axis("off")
