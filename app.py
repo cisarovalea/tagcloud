@@ -33,7 +33,7 @@ slovak_stopwords = [
     "že", "zo", "za", "na", "v", "do", "po", "pre", "od", "k", "so", "bez", "o",
     "alebo", "tak", "ten", "tá", "to", "s", "sa", "sú", "sa", "už", "do", "pri",
     "sa", "ako", "pretože", "keď", "ktorý", "ktorá", "ktoré", "ale", "teda", "táto",
-    "podľa", "napriek", "byť", "zároveň", "vrátane", "mnohý", "určený", "toto"
+    "podľa", "napriek", "byť", "zároveň", "vrátane", "mnohý", "určený", "toto", "ona", "on"
 ]
 
 def lemmatize_words_udpipe(text):
