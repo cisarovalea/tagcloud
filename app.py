@@ -80,7 +80,7 @@ if uploaded_file:
     custom_stopwords = [w.strip().lower() for w in stopwords_input.split(",") if w.strip() != ""]
     all_stopwords = set(slovak_stopwords + custom_stopwords)
 
-    filtered_lemmas = [w for w in lemmas if w not in stopwords and len(w) > 2]
+    filtered_lemmas = [w for w in lemmas if w not in all_stopwords and len(w) > 2]
     st.write("Slová po filtrovaní:")
     st.write(filtered_lemmas[:50])
 
