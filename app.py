@@ -1,3 +1,11 @@
+import ufal.udpipe
+
+MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
+model = ufal.udpipe.Model.load(MODEL_PATH)
+if model:
+    st.write("UDPipe model sa načítal správne!")
+else:
+    st.error("Model sa nenačítal! Skontroluj cestu a súbor v repozitári.")
 import streamlit as st
 import pandas as pd
 import re
