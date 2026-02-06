@@ -77,12 +77,12 @@ if uploaded_file:
     st.write("Slová po filtrovaní:")
     st.write(filtered_lemmas[:20])
 
-    words_counter = Counter(filtered_words)
+    words_counter = Counter(filtered_lemmas)
     
     from wordcloud import WordCloud
     import matplotlib.pyplot as plt
     
-    wc_text = " ".join(filtered_words)
+    wc_text = " ".join(filtered_lemmas)
     
     wc = WordCloud(
     width=800,
