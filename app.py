@@ -51,6 +51,7 @@ if uploaded_file:
     
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
+    ax.axis("off")
     st.pyplot(fig)
 
 
