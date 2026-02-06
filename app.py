@@ -1,12 +1,4 @@
 import streamlit as st
-import pandas as pd
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-import spacy
-
-
-nlp = spacy.load("sk_core_news_sm") 
-import streamlit as st
 
 st.title("NLP systém pre abstrakty")
 st.write("Aplikácia funguje 🎉")
@@ -43,8 +35,7 @@ if uploaded_file:
 
     st.write("Slová po filtrovaní:")
     st.write(filtered_words[:20])
-    doc = nlp(" ".join(filtered_words))
-lemmas = [token.lemma_ for token in doc if not token.is_punct and not token.is_space]
+
 
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
