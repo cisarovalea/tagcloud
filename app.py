@@ -128,6 +128,23 @@ if uploaded_file:
     max_words=max_words
 ).generate_from_frequencies(words_counter)
 
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.imshow(wc, interpolation='bilinear')
+ax.axis("off")
+st.pyplot(fig)
+import io
+
+buf = io.BytesIO()
+fig.savefig(buf, format="png")
+buf.seek(0)
+
+st.download_button(
+    label="Stiahnuť tagcloud ako PNG",
+    data=buf,
+    file_name="tagcloud.png",
+    mime="image/png"
+)
+
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
     ax.axis("off")
