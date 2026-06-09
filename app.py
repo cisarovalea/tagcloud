@@ -100,13 +100,27 @@ if uploaded_file:
     value=50,
     step=10
 )
-
+    colormap = st.selectbox(
+    "Farebná schéma",
+    [
+        "viridis",
+        "plasma",
+        "inferno",
+        "magma",
+        "cividis",
+        "cool",
+        "spring",
+        "summer",
+        "autumn",
+        "winter"
+    ]
+)
     # 5. WORDCLOUD
     wc = WordCloud(
     width=800,
     height=400,
     background_color="white",
-    colormap="viridis",
+    colormap=colormap,
     max_words=max_words
 ).generate_from_frequencies(words_counter)
 
