@@ -69,7 +69,7 @@ if uploaded_file:
     # 3. STOP SLOVÁ
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
-        "bakalársky,cieľ,práca,analýza"
+        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený,uvedený,preskúmať,vhodný,následne,možnosť,zaoberať"
     )
 
     custom_stopwords = [
@@ -93,14 +93,22 @@ if uploaded_file:
 
     most_common = words_counter.most_common(50)
     st.write("50 najčastejších slov:", most_common)
+    max_words = st.slider(
+    "Počet slov v tagcloude",
+    min_value=10,
+    max_value=200,
+    value=50,
+    step=10
+)
 
     # 5. WORDCLOUD
     wc = WordCloud(
-        width=800,
-        height=400,
-        background_color="white",
-        colormap="viridis"
-    ).generate_from_frequencies(words_counter)
+    width=800,
+    height=400,
+    background_color="white",
+    colormap="viridis",
+    max_words=max_words
+).generate_from_frequencies(words_counter)
 
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
