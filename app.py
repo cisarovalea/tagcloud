@@ -5,7 +5,6 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
 import ufal.udpipe
-from sklearn.feature_extraction.text import CountVectorizer
 
 MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
