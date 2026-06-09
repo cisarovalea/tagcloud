@@ -5,11 +5,9 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
 import ufal.udpipe
+from sklearn.feature_extraction.text import CountVectorizer
 
-import streamlit as st
-import ufal.udpipe
-
-MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"  # uprav podľa repozitára
+MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
 if model:
     st.write("UDPipe model sa načítal správne!")
@@ -21,12 +19,6 @@ st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
 st.write("Aplikácia funguje")
 
 st.subheader("Nahraj abstrakty")
-
-MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe" 
-model = ufal.udpipe.Model.load(MODEL_PATH)
-if not model:
-    st.error("Nepodarilo sa načítať UDPipe model!")
-    st.stop()
 
 slovak_stopwords = [
     "a", "aby", "aj", "ale", "ani", "ako", "ani", "sa", "som", "si", "sú", "je",
@@ -61,52 +53,60 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file:
-    import pandas as pd
     df = pd.read_csv(uploaded_file)
     st.write("Načítané dáta:")
     st.write(df.head())
 
+    # 1. TEXT
     text = " ".join(df["abstrakt"].astype(str))
-    words = re.findall(r"\b\w+\b", text.lower())
-    
-    st.write("Lematizujem text... (môže chvíľu trvať pri veľkých datasetoch)")
+
+    # 2. LEMATIZÁCIA
+    st.write("Lematizujem text...")
     lemmas = lemmatize_words_udpipe(text)
+
     st.write("Počet lematizovaných slov:", len(lemmas))
-    st.write("Prvých 50 slov na kontrolu:", lemmas[:50])
-    
+    st.write("Prvých 50 slov:", lemmas[:50])
+
+    # 3. STOP SLOVÁ
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
-        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený,uvedený,preskúmať"
+        "bakalársky,cieľ,práca,analýza"
     )
 
-    custom_stopwords = [w.strip().lower() for w in stopwords_input.split(",") if w.strip() != ""]
+    custom_stopwords = [
+        w.strip().lower()
+        for w in stopwords_input.split(",")
+        if w.strip()
+    ]
+
     all_stopwords = set(slovak_stopwords + custom_stopwords)
 
-    filtered_lemmas = [w for w in lemmas if w not in all_stopwords and len(w) > 2]
-    st.write("Slová po filtrovaní:")
-    st.write(filtered_lemmas[:50])
+    filtered_lemmas = [
+        w for w in lemmas
+        if w not in all_stopwords and len(w) > 2
+    ]
 
+    st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
+    st.write("Prvých 50 slov:", filtered_lemmas[:50])
+
+    # 4. FREKVENCIE
     words_counter = Counter(filtered_lemmas)
-    
+
     most_common = words_counter.most_common(50)
     st.write("50 najčastejších slov:", most_common)
-    
-    from wordcloud import WordCloud
-    import matplotlib.pyplot as plt
-    
-    wc_text = " ".join(filtered_lemmas)
-    
+
+    # 5. WORDCLOUD
     wc = WordCloud(
-    width=800,
-    height=400,
-    background_color="white",
-    colormap="viridis", 
-    stopwords=None 
+        width=800,
+        height=400,
+        background_color="white",
+        colormap="viridis"
     ).generate_from_frequencies(words_counter)
-    
+
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
     ax.axis("off")
     st.pyplot(fig)
+    
 
 
