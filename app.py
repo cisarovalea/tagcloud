@@ -115,11 +115,15 @@ if uploaded_file:
         "winter"
     ]
 )
+    background_color = st.selectbox(
+    "Farba pozadia",
+    ["white", "black"]
+)
     # 5. WORDCLOUD
     wc = WordCloud(
     width=800,
     height=400,
-    background_color="white",
+    background_color=background_color,
     colormap=colormap,
     max_words=max_words
 ).generate_from_frequencies(words_counter)
