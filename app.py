@@ -95,11 +95,9 @@ if uploaded_file:
     st.write("Prvých 25 slov:", filtered_lemmas[:25])
     
     min_freq = st.slider(
-    "Minimálna frekvencia slova",
-    min_value=1,
-    max_value=20,
-    value=2,
-    step=1
+        "Minimálna frekvencia slova",
+        1, 20, 2,
+        key="min_freq"
 )
     # 4. FREKVENCIE
     words_counter = Counter(filtered_lemmas)
@@ -108,13 +106,10 @@ if uploaded_file:
         dict(words_counter.most_common(n_words))
 )
 
-
-    max_words = st.slider(
-    "Počet slov v tagcloude",
-    min_value=10,
-    max_value=200,
-    value=50,
-    step=10
+    n_words = st.slider(
+        "Počet slov v tagcloude",
+        10, 200, 50,
+        key="n_words"
 )
     colormap = st.selectbox(
     "Farebná schéma",
