@@ -82,13 +82,23 @@ if uploaded_file:
     filtered_lemmas = [
         w for w in lemmas
         if w not in all_stopwords and len(w) > 2
-    ]
+]
 
     st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
     st.write("Prvých 50 slov:", filtered_lemmas[:50])
-
+    
+    min_freq = st.slider(
+    "Minimálna frekvencia slova",
+    min_value=1,
+    max_value=20,
+    value=2,
+    step=1
+)
     # 4. FREKVENCIE
     words_counter = Counter(filtered_lemmas)
+    words_counter = Counter(
+        {w: c for w, c in words_counter.items() if c >= min_freq}
+)
 
     most_common = words_counter.most_common(50)
     st.write("50 najčastejších slov:", most_common)
