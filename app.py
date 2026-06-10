@@ -61,9 +61,16 @@ if uploaded_file:
     # 2. LEMATIZÁCIA
     st.write("Lematizujem text...")
     lemmas = lemmatize_words_udpipe(text)
+    n_words = st.slider(
+        "Počet slov v tagcloude",
+        min_value=10,
+        max_value=200,
+        value=50,
+        step=10
+)
 
     st.write("Počet lematizovaných slov:", len(lemmas))
-    st.write("Prvých 50 slov:", lemmas[:50])
+    st.write("Prvých 25 slov:", lemmas[:25])
 
     # 3. STOP SLOVÁ
     stopwords_input = st.text_area(
@@ -85,7 +92,7 @@ if uploaded_file:
 ]
 
     st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
-    st.write("Prvých 50 slov:", filtered_lemmas[:50])
+    st.write("Prvých 25 slov:", filtered_lemmas[:25])
     
     min_freq = st.slider(
     "Minimálna frekvencia slova",
@@ -96,12 +103,12 @@ if uploaded_file:
 )
     # 4. FREKVENCIE
     words_counter = Counter(filtered_lemmas)
+
     words_counter = Counter(
-        {w: c for w, c in words_counter.items() if c >= min_freq}
+        dict(words_counter.most_common(n_words))
 )
 
-    most_common = words_counter.most_common(50)
-    st.write("50 najčastejších slov:", most_common)
+
     max_words = st.slider(
     "Počet slov v tagcloude",
     min_value=10,
@@ -134,7 +141,7 @@ if uploaded_file:
     height=400,
     background_color=background_color,
     colormap=colormap,
-    max_words=max_words
+    max_words=n_words
 ).generate_from_frequencies(words_counter)
 
     fig, ax = plt.subplots(figsize=(12, 6))
