@@ -99,6 +99,7 @@ if uploaded_file:
     words_counter = Counter(
         {w: c for w, c in words_counter.items() if c >= min_freq}
 )
+)
 
     most_common = words_counter.most_common(50)
     st.write("50 najčastejších slov:", most_common)
