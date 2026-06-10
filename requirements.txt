@@ -3,5 +3,3 @@ streamlit
 pandas
 matplotlib
 wordcloud
-numpy
-pillow
