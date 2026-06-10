@@ -15,7 +15,6 @@ else:
     st.stop()
 
 st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
-st.write("Aplikácia funguje")
 
 st.subheader("Nahraj abstrakty")
 
