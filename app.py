@@ -106,7 +106,15 @@ if uploaded_file:
 
     st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
     st.write("Prvých 25 slov:", filtered_lemmas[:25])
-    
+
+    n_words = st.slider(
+        "Počet slov v tagcloude",
+        min_value=10,
+        max_value=200,
+        value=50,
+        step=10
+)
+   
     min_freq = st.slider(
         "Minimálna frekvencia slova",
         1, 20, 2,
