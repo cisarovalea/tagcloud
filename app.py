@@ -59,6 +59,11 @@ with st.sidebar:
         "Farebná schéma",
         ["viridis", "plasma", "magma", "cividis"]
     )
+    bg_color = st.selectbox(
+        "Farba pozadia",
+        ["white", "black"]
+    )
+    
 st.title("Tagcloud systém pre abstrakty záverečných prác")
 st.write("Aplikácia funguje")
 
