@@ -135,10 +135,6 @@ if uploaded_file:
     st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
     st.write("Prvých 25 slov:", filtered_lemmas[:25])
 
-    ngram_type = st.selectbox(
-        "Typ výrazov",
-        ["Jednoslovné", "Dvojslovné (bigramy)"]
-)
     # 3. frekvencie
     if ngram_type == "Jednoslovné":
         data = filtered_lemmas
