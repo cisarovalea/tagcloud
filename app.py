@@ -91,7 +91,7 @@ if uploaded_file:
     text = " ".join(df["abstrakt"].astype(str))
 
     # 3. lematizácia
-    lemmas = lemmatize_udpipe(text)
+    lemmas = lemmatize_words_udpipe(text)
 
     # 4. základné štatistiky
     num_tokens = len(re.findall(r"\b\w+\b", text.lower()))
