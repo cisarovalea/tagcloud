@@ -17,7 +17,7 @@ else:
     st.error("Nepodarilo sa načítať UDPipe model! Skontroluj cestu a súbor v repozitári.")
     st.stop()
 
-def lemmatize_udpipe(text):
+def lemmatize_words_udpipe(text):
     """
     Vstup: text ako string
     Výstup: zoznam lematizovaných slov
