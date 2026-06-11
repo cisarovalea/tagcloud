@@ -81,14 +81,7 @@ if uploaded_file:
     # 2. LEMATIZÁCIA
     st.write("Lematizujem text...")
     lemmas = lemmatize_words_udpipe(text)
-    n_words = st.slider(
-        "Počet slov v tagcloude",
-        min_value=10,
-        max_value=200,
-        value=50,
-        step=10
-)
-
+    
     st.write("Počet lematizovaných slov:", len(lemmas))
     st.write("Prvých 25 slov:", lemmas[:25])
 
@@ -113,6 +106,15 @@ if uploaded_file:
 
     st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
     st.write("Prvých 25 slov:", filtered_lemmas[:25])
+    
+    n_words = st.slider(
+        "Počet slov v tagcloude",
+        min_value=10,
+        max_value=200,
+        value=50,
+        step=10
+)
+
     
     min_freq = st.slider(
         "Minimálna frekvencia slova",
