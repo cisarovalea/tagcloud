@@ -57,7 +57,7 @@ slovak_stopwords = [
     "(", ")", ",", ".", "jeho", "jej", "viacero", "pričom", "ich", "mať"
 ]
 
-def lemmatize_words_udpipe(text):
+def lemmatize_udpipe(text):
     """
     Vstup: text ako string
     Výstup: zoznam lematizovaných slov
@@ -75,16 +75,8 @@ def lemmatize_words_udpipe(text):
             lemmas.append(lemma.lower())
     return lemmas
     
-uploaded_file = st.file_uploader(
-    "Vyber CSV súbor s abstraktmi záverečných prác",
-    type="csv"
-)
-
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
-    st.subheader("Načítané dáta:")
-    st.write(df.head())
-
     text = " ".join(df["abstrakt"].astype(str))
 
     words = re.findall(r"\b\w+\b", text.lower())
@@ -98,7 +90,7 @@ if uploaded_file:
     text = " ".join(df["abstrakt"].astype(str))
 
     # 3. lematizácia
-    lemmas = lemmatize_words_udpipe(text)
+    lemmas = lemmatize_udpipe(text)
 
     # 4. základné štatistiky
     num_tokens = len(re.findall(r"\b\w+\b", text.lower()))
@@ -164,12 +156,11 @@ if uploaded_file:
 )
     # 3. frekvencie
     if ngram_type == "Jednoslovné":
-        filtered_words = words
-
-        words_counter = Counter(filtered_words)
+        data = filtered_lemmas
+        words_counter = Counter(data)
 
     else:
-        text_for_bigrams = " ".join(words)
+        text_for_bigrams = " ".join(filtered_lemmas)
 
         vectorizer = CountVectorizer(ngram_range=(2, 2))
         X = vectorizer.fit_transform([text_for_bigrams])
