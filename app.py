@@ -149,6 +149,22 @@ if uploaded_file:
     fig.savefig(buf, format="png")
     buf.seek(0)
 
+    top_words_df = pd.DataFrame(
+        words_counter.most_common(n_words),
+        columns=["Slovo", "Frekvencia"]
+)
+    st.subheader("Frekvencie slov")
+    st.dataframe(top_words_df)
+
+    csv = top_words_df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        label="Stiahnuť frekvencie slov (CSV)",
+        data=csv,
+        file_name="frekvencie_slov.csv",
+        mime="text/csv"
+)
+
     st.download_button(
         label="Stiahnuť tagcloud ako PNG",
         data=buf,
