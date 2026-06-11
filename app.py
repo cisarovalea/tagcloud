@@ -5,6 +5,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
 import ufal.udpipe
+from sklearn.feature_extraction.text import CountVectorizer
 
 MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
@@ -123,9 +124,28 @@ if uploaded_file:
         1, 20, 2,
         key="min_freq"
 )
-
+    ngram_type = st.selectbox(
+        "Typ výrazov",
+        ["Jednoslovné", "Dvojslovné (bigramy)"]
+)
     # 3. frekvencie
-    words_counter = Counter(filtered_lemmas)
+    if ngram_type == "Jednoslovné":
+        words_counter = Counter(filtered_lemmas)
+    else:
+        text_for_bigrams = " ".join(filtered_lemmas)
+
+        vectorizer = CountVectorizer(
+        ngram_range=(2, 2)
+    )
+
+        X = vectorizer.fit_transform([text_for_bigrams])
+
+        words = vectorizer.get_feature_names_out()
+        counts = X.toarray().sum(axis=0)
+
+        words_counter = Counter(
+            dict(zip(words, counts))
+    
 
     # 4. filter min frequency
     words_counter = Counter(
