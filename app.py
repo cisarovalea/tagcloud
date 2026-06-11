@@ -154,12 +154,6 @@ if uploaded_file:
         columns=["Slovo", "Frekvencia"]
 )
 
-    top_words_df.insert(
-        0,
-        "Poradie",
-        range(1, len(top_words_df) + 1)
-)
-    
     st.subheader("Frekvencie slov")
     st.dataframe(top_words_df)
 
