@@ -54,6 +54,26 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
     st.write("Načítané dáta:")
     st.write(df.head())
+    st.subheader("Štatistiky datasetu")
+
+    # 1. počet abstraktov
+    num_abstracts = len(df)
+
+    # 2. text
+    text = " ".join(df["abstrakt"].astype(str))
+
+    # 3. lematizácia (už ju máš)
+    lemmas = lemmatize_words_udpipe(text)
+
+    # 4. základné štatistiky
+    num_tokens = len(re.findall(r"\b\w+\b", text.lower()))
+    num_lemmas = len(lemmas)
+    num_unique_lemmas = len(set(lemmas))
+
+    st.write("Počet abstraktov:", num_abstracts)
+    st.write("Počet tokenov:", num_tokens)
+    st.write("Počet lemát:", num_lemmas)
+    st.write("Počet unikátnych lemát:", num_unique_lemmas)
 
     # 1. TEXT
     text = " ".join(df["abstrakt"].astype(str))
