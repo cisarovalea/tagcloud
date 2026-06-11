@@ -8,6 +8,7 @@ import ufal.udpipe
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 
+
 MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
 if model:
@@ -16,6 +17,24 @@ else:
     st.error("Nepodarilo sa načítať UDPipe model! Skontroluj cestu a súbor v repozitári.")
     st.stop()
 
+def lemmatize_udpipe(text):
+    """
+    Vstup: text ako string
+    Výstup: zoznam lematizovaných slov
+    """
+    pipeline = ufal.udpipe.Pipeline(model, "tokenize", ufal.udpipe.Pipeline.DEFAULT, ufal.udpipe.Pipeline.DEFAULT, "conllu")
+    processed = pipeline.process(text)
+    
+    lemmas = []
+    for line in processed.split("\n"):
+        if line.startswith("#") or line.strip() == "":
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 4:
+            lemma = parts[2]
+            lemmas.append(lemma.lower())
+    return lemmas
+    
 with st.sidebar:
     st.title("Nastavenia")
 
@@ -57,24 +76,6 @@ slovak_stopwords = [
     "(", ")", ",", ".", "jeho", "jej", "viacero", "pričom", "ich", "mať"
 ]
 
-def lemmatize_udpipe(text):
-    """
-    Vstup: text ako string
-    Výstup: zoznam lematizovaných slov
-    """
-    pipeline = ufal.udpipe.Pipeline(model, "tokenize", ufal.udpipe.Pipeline.DEFAULT, ufal.udpipe.Pipeline.DEFAULT, "conllu")
-    processed = pipeline.process(text)
-    
-    lemmas = []
-    for line in processed.split("\n"):
-        if line.startswith("#") or line.strip() == "":
-            continue
-        parts = line.split("\t")
-        if len(parts) >= 4:
-            lemma = parts[2]
-            lemmas.append(lemma.lower())
-    return lemmas
-    
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
     text = " ".join(df["abstrakt"].astype(str))
