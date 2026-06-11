@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import ufal.udpipe
 from sklearn.feature_extraction.text import CountVectorizer
+import numpy as np
 
 MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
@@ -15,9 +16,37 @@ else:
     st.error("Nepodarilo sa načítať UDPipe model! Skontroluj cestu a súbor v repozitári.")
     st.stop()
 
-st.title("Tagcloud systém pre abstrakty záverečných prác študentov")
+with st.sidebar:
+    st.title("Nastavenia")
 
-st.subheader("Nahraj abstrakty")
+    n_words = st.slider(
+        "Počet slov v tagcloude",
+        10, 200, 50,
+        key="n_words"
+    )
+
+    min_freq = st.slider(
+        "Minimálna frekvencia slova",
+        1, 20, 2,
+        key="min_freq"
+    )
+
+    ngram_type = st.selectbox(
+        "Typ výrazov",
+        ["Jednoslovné", "Bigramy"]
+    )
+
+    colormap = st.selectbox(
+        "Farebná schéma",
+        ["viridis", "plasma", "magma", "cividis"]
+    )
+st.title("Tagcloud systém pre abstrakty záverečných prác")
+st.write("Aplikácia funguje")
+
+uploaded_file = st.file_uploader(
+    "Nahraj CSV súbor s abstraktmi",
+    type="csv"
+)
 
 slovak_stopwords = [
     "a", "aby", "aj", "ale", "ani", "ako", "ani", "sa", "som", "si", "sú", "je",
@@ -53,17 +82,22 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
-    st.write("Načítané dáta:")
+    st.subheader("Načítané dáta:")
     st.write(df.head())
-    st.subheader("Štatistiky datasetu")
 
+    text = " ".join(df["abstrakt"].astype(str))
+
+    words = re.findall(r"\b\w+\b", text.lower())
+    
+    st.subheader("Štatistiky datasetu")
+    lemmas = words
     # 1. počet abstraktov
     num_abstracts = len(df)
 
     # 2. text
     text = " ".join(df["abstrakt"].astype(str))
 
-    # 3. lematizácia (už ju máš)
+    # 3. lematizácia
     lemmas = lemmatize_words_udpipe(text)
 
     # 4. základné štatistiky
@@ -71,10 +105,10 @@ if uploaded_file:
     num_lemmas = len(lemmas)
     num_unique_lemmas = len(set(lemmas))
 
-    st.write("Počet abstraktov:", num_abstracts)
-    st.write("Počet tokenov:", num_tokens)
+    st.write("Počet abstraktov:", len(df))
+    st.write("Počet tokenov:", len(words))
     st.write("Počet lemát:", num_lemmas)
-    st.write("Počet unikátnych lemát:", num_unique_lemmas)
+    st.write("Počet unikátnych slov:", len(set(words)))
 
     # 1. TEXT
     text = " ".join(df["abstrakt"].astype(str))
@@ -130,79 +164,60 @@ if uploaded_file:
 )
     # 3. frekvencie
     if ngram_type == "Jednoslovné":
-        words_counter = Counter(filtered_lemmas)
+        filtered_words = words
+
+        words_counter = Counter(filtered_words)
+
     else:
-        text_for_bigrams = " ".join(filtered_lemmas)
+        text_for_bigrams = " ".join(words)
 
-        vectorizer = CountVectorizer(
-        ngram_range=(2, 2)
-    )
-
+        vectorizer = CountVectorizer(ngram_range=(2, 2))
         X = vectorizer.fit_transform([text_for_bigrams])
 
-        words = vectorizer.get_feature_names_out()
+        words_list = vectorizer.get_feature_names_out()
         counts = X.toarray().sum(axis=0)
 
-        words_counter = Counter(
-            dict(zip(words, counts))
-        )
+        words_counter = Counter(dict(zip(words_list, counts)))
 
     # 4. filter min frequency
     words_counter = Counter(
         {w: c for w, c in words_counter.items() if c >= min_freq}
-)
-
+    )
     # 5. TOP N (tu sa používa slider)
     words_counter = Counter(
         dict(words_counter.most_common(n_words))
-)
-    colormap = st.selectbox(
-    "Farebná schéma",
-    [
-        "viridis",
-        "plasma",
-        "inferno",
-        "magma",
-        "cividis",
-        "cool",
-        "spring",
-        "summer",
-        "autumn",
-        "winter"
-    ]
-)
-    background_color = st.selectbox(
-    "Farba pozadia",
-    ["white", "black"]
-)
+    )
+    
     # 5. WORDCLOUD
     wc = WordCloud(
-    width=800,
-    height=400,
-    background_color=background_color,
-    colormap=colormap,
-    max_words=n_words
-).generate_from_frequencies(words_counter)
+        width=800,
+        height=400,
+        background_color="white",
+        colormap=colormap,
+        max_words=n_words,
+        random_state=42
+    ).generate_from_frequencies(words_counter)
 
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.imshow(wc, interpolation='bilinear')
     ax.axis("off")
+
     st.pyplot(fig)
     import io
 
     buf = io.BytesIO()
     fig.savefig(buf, format="png")
     buf.seek(0)
-
-    top_words_df = pd.DataFrame(
+    st.subheader("Top slová")
+    top_df = pd.DataFrame(
         words_counter.most_common(n_words),
         columns=["Slovo", "Frekvencia"]
 )
 
     st.subheader("Frekvencie slov")
-    st.dataframe(top_words_df)
+    st.dataframe(top_df)
 
-    csv = top_words_df.to_csv(index=False).encode("utf-8-sig")
+    csv = top_df.to_csv(index=False).encode("utf-8-sig")
 
     st.download_button(
         label="Stiahnuť frekvencie slov (CSV)",
