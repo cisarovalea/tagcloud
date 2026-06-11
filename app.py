@@ -157,7 +157,7 @@ if uploaded_file:
     st.subheader("Frekvencie slov")
     st.dataframe(top_words_df)
 
-    csv = top_words_df.to_csv(index=False).encode("utf-8")
+    csv = top_words_df.to_csv(index=False).encode("utf-8-sig")
 
     st.download_button(
         label="Stiahnuť frekvencie slov (CSV)",
