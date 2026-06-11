@@ -145,7 +145,7 @@ if uploaded_file:
 
         words_counter = Counter(
             dict(zip(words, counts))
-    
+        )
 
     # 4. filter min frequency
     words_counter = Counter(
