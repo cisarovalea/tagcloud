@@ -4,3 +4,5 @@ pandas
 matplotlib
 wordcloud
 scikit-learn
+numpy
+pillow
