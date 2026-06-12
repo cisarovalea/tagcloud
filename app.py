@@ -52,7 +52,7 @@ with st.sidebar:
 
     ngram_type = st.selectbox(
         "Typ výrazov",
-        ["Jednoslovné", "Bigramy"]
+        ["Jednoslovné", "Bigramy", "Trigramy"]
     )
 
     colormap = st.selectbox(
@@ -142,19 +142,42 @@ if uploaded_file:
 
     # 3. frekvencie
     if ngram_type == "Jednoslovné":
-        data = filtered_lemmas
-        words_counter = Counter(data)
 
-    else:
-        text_for_bigrams = " ".join(filtered_lemmas)
+        words_counter = Counter(filtered_lemmas)
 
-        vectorizer = CountVectorizer(ngram_range=(2, 2))
-        X = vectorizer.fit_transform([text_for_bigrams])
+    elif ngram_type == "Bigramy":
+
+        text_for_ngrams = " ".join(filtered_lemmas)
+
+        vectorizer = CountVectorizer(
+            ngram_range=(2, 2)
+    )
+
+        X = vectorizer.fit_transform([text_for_ngrams])
 
         words_list = vectorizer.get_feature_names_out()
         counts = X.toarray().sum(axis=0)
 
-        words_counter = Counter(dict(zip(words_list, counts)))
+        words_counter = Counter(
+            dict(zip(words_list, counts))
+    )
+
+    else:  # Trigramy
+
+        text_for_ngrams = " ".join(filtered_lemmas)
+
+        vectorizer = CountVectorizer(
+            ngram_range=(3, 3)
+    )
+
+        X = vectorizer.fit_transform([text_for_ngrams])
+
+        words_list = vectorizer.get_feature_names_out()
+        counts = X.toarray().sum(axis=0)
+
+        words_counter = Counter(
+            dict(zip(words_list, counts))
+    )
 
     # 4. filter min frequency
     words_counter = Counter(
