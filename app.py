@@ -113,7 +113,6 @@ if uploaded_file:
     text = " ".join(df["abstrakt"].astype(str))
 
     # 2. LEMATIZÁCIA
-    st.write("Lematizujem text...")
     lemmas = lemmatize_words_udpipe(text)
     
     # 3. STOP SLOVÁ
