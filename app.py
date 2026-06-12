@@ -11,9 +11,7 @@ import numpy as np
 
 MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
-if model:
-    st.write("UDPipe model sa načítal správne!")
-else:
+if not model:
     st.error("Nepodarilo sa načítať UDPipe model! Skontroluj cestu a súbor v repozitári.")
     st.stop()
 
@@ -65,8 +63,6 @@ with st.sidebar:
     )
     
 st.title("Tagcloud systém pre abstrakty záverečných prác")
-st.write("Aplikácia funguje")
-
 uploaded_file = st.file_uploader(
     "Nahraj CSV súbor s abstraktmi",
     type="csv"
