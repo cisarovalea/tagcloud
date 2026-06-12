@@ -37,30 +37,30 @@ def lemmatize_words_udpipe(text):
     
 with st.sidebar:
     st.title("Nastavenia")
-
-    n_words = st.slider(
-        "Počet slov v tagcloude",
-        10, 200, 50,
-        key="n_words"
-    )
-
-    min_freq = st.slider(
-        "Minimálna frekvencia slova",
-        1, 20, 2,
-        key="min_freq"
-    )
-
+    st.subheader("NLP")
     ngram_type = st.selectbox(
         "Typ výrazov",
         ["Jednoslovné", "Bigramy", "Trigramy"]
     )
-
+    stopwords_input = st.text_area(
+        "Vlastné stop slová (oddelené čiarkou)",
+        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený,uvedený,preskúmať,vhodný,následne,možnosť,zaoberať"
+    )
+    min_freq = st.slider(
+        "Minimálna frekvencia",
+        1, 20, 2
+    )
+    st.subheader("Vizualizácia")
+    n_words = st.slider(
+        "Počet slov",
+        10, 200, 50
+    )
     colormap = st.selectbox(
         "Farebná schéma",
         ["viridis", "plasma", "magma", "cividis"]
     )
     bg_color = st.selectbox(
-        "Farba pozadia",
+        "Pozadie",
         ["white", "black"]
     )
     
@@ -103,10 +103,11 @@ if uploaded_file:
     num_lemmas = len(lemmas)
     num_unique_lemmas = len(set(lemmas))
 
-    st.write("Počet abstraktov:", len(df))
-    st.write("Počet tokenov:", len(words))
-    st.write("Počet lemát:", num_lemmas)
-    st.write("Počet unikátnych slov:", len(set(words)))
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Abstrakty", len(df))
+    col2.metric("Tokeny", num_tokens)
+    col3.metric("Lemá", num_lemmas)
+    col4.metric("Unikátne", num_unique_lemmas)
 
     # 1. TEXT
     text = " ".join(df["abstrakt"].astype(str))
@@ -115,15 +116,7 @@ if uploaded_file:
     st.write("Lematizujem text...")
     lemmas = lemmatize_words_udpipe(text)
     
-    st.write("Počet lematizovaných slov:", len(lemmas))
-    st.write("Prvých 25 slov:", lemmas[:25])
-
     # 3. STOP SLOVÁ
-    stopwords_input = st.text_area(
-        "Vlastné stop slová (oddelené čiarkou)",
-        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený,uvedený,preskúmať,vhodný,následne,možnosť,zaoberať"
-    )
-
     custom_stopwords = [
         w.strip().lower()
         for w in stopwords_input.split(",")
@@ -136,9 +129,6 @@ if uploaded_file:
         w for w in lemmas
         if w not in all_stopwords and len(w) > 2
 ]
-
-    st.write("Počet slov po filtrovaní:", len(filtered_lemmas))
-    st.write("Prvých 25 slov:", filtered_lemmas[:25])
 
     # 3. frekvencie
     if ngram_type == "Jednoslovné":
