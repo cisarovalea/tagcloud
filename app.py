@@ -106,8 +106,8 @@ if uploaded_file:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Abstrakty", len(df))
     col2.metric("Tokeny", num_tokens)
-    col3.metric("Lemá", num_lemmas)
-    col4.metric("Unikátne", num_unique_lemmas)
+    col3.metric("Lemy", num_lemmas)
+    col4.metric("Unikátne lemy", num_unique_lemmas)
 
     # 1. TEXT
     text = " ".join(df["abstrakt"].astype(str))
