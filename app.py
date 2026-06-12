@@ -7,7 +7,14 @@ from collections import Counter
 import ufal.udpipe
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
+from PIL import Image
 
+mask_paths = {
+    "Kruh": "masks/circle.png",
+    "Hviezda": "masks/star.png",
+    "Srdce": "masks/heart.png",
+    "Oblak": "masks/cloud.png"
+}
 
 MODEL_PATH = "slovak-snk-ud-2.5-191206.udpipe"
 model = ufal.udpipe.Model.load(MODEL_PATH)
@@ -61,6 +68,10 @@ with st.sidebar:
         "Pozadie",
         ["white", "black"]
     )
+    mask_type = st.selectbox(
+        "Tvar tagcloudu",
+        ["Žiadny", "Kruh", "Hviezda", "Srdce", "Oblak"]
+)
     
 st.title("Tagcloud systém pre abstrakty záverečných prác")
 uploaded_file = st.file_uploader(
@@ -172,14 +183,19 @@ if uploaded_file:
     words_counter = Counter(
         dict(words_counter.most_common(n_words))
     )
-    
+    mask = None
+    if mask_type != "Žiadny":
+        mask = np.array(Image.open(mask_paths[mask_type]))
     # 5. WORDCLOUD
     wc = WordCloud(
         width=800,
         height=400,
-        background_color="white",
+        background_color=bg_color,
         colormap=colormap,
         max_words=n_words,
+        mask=mask,
+        contour_width=1,
+        contour_color="white",
         random_state=42
     ).generate_from_frequencies(words_counter)
 
