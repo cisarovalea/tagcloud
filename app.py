@@ -185,7 +185,9 @@ if uploaded_file:
     )
     mask = None
     if mask_type != "Žiadny":
-        mask = np.array(Image.open(mask_paths[mask_type]))
+        img = Image.open(mask_paths[mask_type]).convert("L")
+        mask = 255 - np.array(img)
+        
     # 5. WORDCLOUD
     wc = WordCloud(
         width=800,
