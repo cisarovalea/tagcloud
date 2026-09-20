@@ -85,7 +85,7 @@ slovak_stopwords = [
     "alebo", "tak", "ten", "tá", "to", "s", "sa", "sú", "sa", "už", "do", "pri",
     "sa", "ako", "pretože", "keď", "ktorý", "ktorá", "ktoré", "ale", "teda", "táto",
     "podľa", "napriek", "byť", "zároveň", "vrátane", "mnohý", "určený", "toto", "ona", "on",
-    "(", ")", ",", ".", "jeho", "jej", "viacero", "pričom", "ich", "mať", "sem", "dva", "tri", "najmä"
+    "(", ")", ",", ".", "jeho", "jej", "viacero", "pričom", "ich", "mať", "sem", "dva", "tri", "najmä", "aký", "medzi"
 ]
 
 if uploaded_file:
