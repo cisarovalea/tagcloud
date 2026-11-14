@@ -49,7 +49,7 @@ with st.sidebar:
     )
     stopwords_input = st.text_area(
         "Vlastné stop slová (oddelené čiarkou)",
-        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený,uvedený,preskúmať,vhodný,následne,možnosť,zaoberať"
+        "bakalársky,cieľ,práca,analýza,časť,praktický,teória,teoretický,jednotlivý,prirodzený,uvedený,preskúmať,vhodný,následne,možnosť,zaoberať,venovať,slúžiť,oblasť"
     )
     min_freq = st.slider(
         "Minimálna frekvencia",
