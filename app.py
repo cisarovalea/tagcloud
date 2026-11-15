@@ -79,7 +79,7 @@ with st.sidebar:
         "Tvar tagcloudu",
         ["Žiadny", "Kruh", "Hviezda", "Srdce", "Oblak"]
 )
-    
+st.title("Tagcloud systém pre abstrakty záverečných prác")
 if input_mode == "Tradičné spracovanie textu":
     uploaded_file = st.file_uploader(
         "Nahraj CSV súbor s abstraktmi",
