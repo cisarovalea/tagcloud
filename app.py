@@ -41,7 +41,21 @@ def lemmatize_words_udpipe(text):
     return lemmas
     
 with st.sidebar:
+    input_mode = st.radio(
+    "Spôsob tvorby tagcloudu",
+    [
+        "Tradičné spracovanie textu",
+        "Generatívny výstup (pojmy a váhy)"
+    ]
+)
     st.title("Nastavenia")
+    input_mode = st.radio(
+    "Spôsob tvorby tagcloudu",
+    [
+        "Tradičné spracovanie textu",
+        "Generatívny výstup (pojmy a váhy)"
+    ]
+)
     st.subheader("NLP")
     ngram_type = st.selectbox(
         "Typ výrazov",
@@ -73,11 +87,18 @@ with st.sidebar:
         ["Žiadny", "Kruh", "Hviezda", "Srdce", "Oblak"]
 )
     
-st.title("Tagcloud systém pre abstrakty záverečných prác")
-uploaded_file = st.file_uploader(
-    "Nahraj CSV súbor s abstraktmi",
-    type="csv"
-)
+if input_mode == "Tradičné spracovanie textu":
+    uploaded_file = st.file_uploader(
+        "Nahraj CSV súbor s abstraktmi",
+        type="csv",
+        key="traditional"
+    )
+else:
+    uploaded_file = st.file_uploader(
+        "Nahraj CSV súbor s pojmami a váhami",
+        type="csv",
+        key="generative"
+    )
 
 slovak_stopwords = [
     "a", "aby", "aj", "ale", "ani", "ako", "ani", "sa", "som", "si", "sú", "je",
@@ -88,7 +109,7 @@ slovak_stopwords = [
     "(", ")", ",", ".", "jeho", "jej", "viacero", "pričom", "ich", "mať", "sem", "dva", "tri", "najmä", "aký", "medzi", "tento"
 ]
 
-if uploaded_file:
+if uploaded_file and input_mode == "Tradičné spracovanie textu":
     df = pd.read_csv(uploaded_file)
     text = " ".join(df["abstrakt"].astype(str))
 
@@ -235,6 +256,74 @@ if uploaded_file:
         file_name="tagcloud.png",
         mime="image/png"
 )
+    elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
+
+    df_ai = pd.read_csv(uploaded_file)
+
+    if not {"pojem", "vaha"}.issubset(df_ai.columns):
+        st.error("CSV musí obsahovať stĺpce 'pojem' a 'vaha'.")
+        st.stop()
+
+    df_ai["pojem"] = df_ai["pojem"].astype(str).str.strip()
+    df_ai["vaha"] = pd.to_numeric(df_ai["vaha"], errors="coerce")
+
+    df_ai = df_ai.dropna(subset=["vaha"])
+    df_ai = df_ai[df_ai["pojem"] != ""]
+
+    words_counter = dict(zip(df_ai["pojem"], df_ai["vaha"]))
+
+    # Vizualizácia
+    mask = None
+    if mask_type != "Žiadny":
+        img = Image.open(mask_paths[mask_type]).convert("L")
+        mask = 255 - np.array(img)
+
+    wc = WordCloud(
+        width=800,
+        height=400,
+        background_color=bg_color,
+        colormap=colormap,
+        max_words=n_words,
+        mask=mask,
+        contour_width=1,
+        contour_color="white",
+        random_state=42
+    ).generate_from_frequencies(words_counter)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.imshow(wc, interpolation="bilinear")
+    ax.axis("off")
+    st.pyplot(fig)
+
+    import io
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png")
+    buf.seek(0)
+
+    # Tabuľka pojmov a váh
+    top_df = pd.DataFrame(
+        words_counter.items(),
+        columns=["Pojem", "Váha"]
+    ).sort_values("Váha", ascending=False)
+
+    st.subheader("Pojmy a ich váhy")
+    st.dataframe(top_df)
+
+    csv = top_df.to_csv(index=False).encode("utf-8-sig")
+
+    st.download_button(
+        label="Stiahnuť pojmy a váhy (CSV)",
+        data=csv,
+        file_name="ai_pojmy_a_vahy.csv",
+        mime="text/csv"
+    )
+
+    st.download_button(
+        label="Stiahnuť tagcloud ako PNG",
+        data=buf,
+        file_name="tagcloud_ai.png",
+        mime="image/png"
+    )
     
 
 
