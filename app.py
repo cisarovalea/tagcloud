@@ -256,7 +256,7 @@ if uploaded_file and input_mode == "Tradičné spracovanie textu":
         file_name="tagcloud.png",
         mime="image/png"
 )
-    elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
+elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
 
     df_ai = pd.read_csv(uploaded_file)
 
