@@ -41,13 +41,6 @@ def lemmatize_words_udpipe(text):
     return lemmas
     
 with st.sidebar:
-    input_mode = st.radio(
-    "Spôsob tvorby tagcloudu",
-    [
-        "Tradičné spracovanie textu",
-        "Generatívny výstup (pojmy a váhy)"
-    ]
-)
     st.title("Nastavenia")
     input_mode = st.radio(
     "Spôsob tvorby tagcloudu",
