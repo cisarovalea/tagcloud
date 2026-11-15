@@ -271,6 +271,7 @@ elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
     df_ai = df_ai[df_ai["pojem"] != ""]
 
     words_counter = dict(zip(df_ai["pojem"], df_ai["vaha"]))
+    st.write("Načítané váhy:", words_counter)
 
     # Vizualizácia
     mask = None
