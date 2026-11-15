@@ -251,12 +251,21 @@ if uploaded_file and input_mode == "Tradičné spracovanie textu":
 )
 elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
 
-    df_ai = pd.read_csv(uploaded_file)
+    df_ai = pd.read_csv(uploaded_file, encoding="utf-8-sig")
 
-    if not {"pojem", "vaha"}.issubset(df_ai.columns):
-        st.error("CSV musí obsahovať stĺpce 'pojem' a 'vaha'.")
-        st.stop()
+    df_ai.columns = (
+        df_ai.columns
+        .str.strip()
+        .str.lower()
+        .str.normalize("NFKD")
+        .str.encode("ascii", errors="ignore")
+        .str.decode("utf-8")
+)
 
+if not {"pojem", "vaha"}.issubset(df_ai.columns):
+    st.error("CSV musí obsahovať stĺpce 'pojem' a 'vaha'.")
+    st.write("Načítané stĺpce:", list(df_ai.columns))
+    st.stop()
     df_ai["pojem"] = df_ai["pojem"].astype(str).str.strip()
     df_ai["vaha"] = pd.to_numeric(df_ai["vaha"], errors="coerce")
 
