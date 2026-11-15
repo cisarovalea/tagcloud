@@ -271,7 +271,12 @@ elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
     df_ai = df_ai.dropna(subset=["vaha"])
     df_ai = df_ai[df_ai["pojem"] != ""]
 
-    words_counter = dict(zip(df_ai["pojem"], df_ai["vaha"]))
+    ai_weights = dict(zip(df_ai["pojem"], df_ai["vaha"]))
+
+    words_counter = {
+        word: weight ** 2
+        for word, weight in ai_weights.items()
+}
     
     # Vizualizácia
     mask = None
@@ -303,9 +308,9 @@ elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
 
     # Tabuľka pojmov a váh
     top_df = pd.DataFrame(
-        words_counter.items(),
+        ai_weights.items(),
         columns=["Pojem", "Váha"]
-    ).sort_values("Váha", ascending=False)
+).sort_values("Váha", ascending=False)
 
     st.subheader("Pojmy a ich váhy")
     st.dataframe(top_df)
