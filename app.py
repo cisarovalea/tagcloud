@@ -210,6 +210,7 @@ if uploaded_file and input_mode == "Tradičné spracovanie textu":
         colormap=colormap,
         max_words=n_words,
         mask=mask,
+        relative_scaling=1.0,
         contour_width=1,
         contour_color="white",
         random_state=42
@@ -271,8 +272,7 @@ elif uploaded_file and input_mode == "Generatívny výstup (pojmy a váhy)":
     df_ai = df_ai[df_ai["pojem"] != ""]
 
     words_counter = dict(zip(df_ai["pojem"], df_ai["vaha"]))
-    st.write("Načítané váhy:", words_counter)
-
+    
     # Vizualizácia
     mask = None
     if mask_type != "Žiadny":
